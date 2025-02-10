@@ -1,4 +1,4 @@
-export type Advertisment = {
+export type IAdvertisment = {
   /* Уникальный идентификатор. */
   id: string;
   /* Название. */
@@ -27,9 +27,9 @@ export const OrderStatus = {
   Refund: 6,
 } as const;
 
-export type OrderItem = Advertisment & { count: number };
+export type IOrderItem = IAdvertisment & { count: number };
 
-export type Order = {
+export type IOrder = {
   /* Уникальный идентификатор. */
   id: string;
   /* Статус. */
@@ -39,14 +39,14 @@ export type Order = {
   /* Дата и время завершения. */
   finishedAt?: string;
   /* Товары в заказе. */
-  items: Array<OrderItem>;
+  items: Array<IOrderItem>;
   /* Способ доставки(Почта, СДЭК...) */
   deliveryWay: string;
   /* Сумма заказа */
   total: number;
 };
 
-export type Image = {
+export type IImage = {
   /* Уникальный идентификатор. */
   id: number;
   /* Ссылка. */
