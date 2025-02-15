@@ -9,6 +9,7 @@ import {
 import { AxiosError } from "axios";
 import { AdvertisementCard } from "../components";
 import ComponentContainer from "../templates/ComponentContainer";
+import { Loader } from "../templates";
 
 const Advertisements = () => {
   const [advertisements, setAdvertisements] = useState<IAdvertisment[]>([]);
@@ -50,9 +51,15 @@ const Advertisements = () => {
       </ComponentContainer>
       <ComponentContainer>
         <div className="advertisements">
-          {advertisements.map((advertisement) => (
-            <AdvertisementCard key={advertisement.id} {...advertisement} />
-          ))}
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <React.Fragment>
+              {advertisements.map((advertisement) => (
+                <AdvertisementCard key={advertisement.id} {...advertisement} />
+              ))}
+            </React.Fragment>
+          )}
         </div>
       </ComponentContainer>
     </div>

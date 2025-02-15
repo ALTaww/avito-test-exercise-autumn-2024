@@ -1,4 +1,5 @@
 @import "./variables";
+@import "./mixins";
 
 html {
   font-size: $font-size;
@@ -11,5 +12,11 @@ html {
   &-body {
     max-width: 1200px;
     margin: 0 auto;
+  }
+}
+
+@include breakpoints-max(xl) {
+  #root {
+    padding: 1rem;
   }
 }

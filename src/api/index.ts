@@ -31,44 +31,6 @@ const createAxiosInstance = (
     return response;
   });
 
-  // Перехватчик ответов
-  //   if (withAuth) {
-  //     let retryCount = 0;
-
-  //     instance.interceptors.response.use(
-  //       (response) => response, // Успешный ответ
-  //       async (error) => {
-  //         const originalRequest = error.config;
-
-  //         // Проверяем, нужно ли обновить токены
-  //         if (
-  //           error.response &&
-  //           error.response.status === 401 &&
-  //           originalRequest &&
-  //           !retryCount
-  //         ) {
-  //           retryCount = 1; // Устанавливаем флаг, чтобы избежать рекурсии
-
-  //           try {
-  //             await userApi.refreshTokens(); // Метод для обновления токенов
-  //             return instance.request(originalRequest); // Повторяем запрос
-  //           } catch (err) {
-  //             showNotification(
-  //               err.message || "Для этой операции нужно зарегистрироваться",
-  //               notificationTimeouts.short,
-  //               notificationStatuses.error
-  //             );
-  //             throw err;
-  //           } finally {
-  //             retryCount = 0; // Сбрасываем счетчик
-  //           }
-  //         }
-
-  //         throw error; // Пробрасываем ошибку, если не удалось обработать
-  //       }
-  //     );
-  //   }
-
   return instance;
 };
 
