@@ -1,5 +1,6 @@
 import { handleError } from "./handleError";
 
+// Прерывание запросов
 export async function fetchWithAbort<T>(
   requestFunction: (signal: AbortSignal) => Promise<T>,
   signal: AbortSignal

@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 
 const createAxiosInstance = (
-  baseURL = process.env.REACT_APP_API_URL + "/api",
+  baseURL = process.env.REACT_APP_API_URL,
   withAuth = false
 ): AxiosInstance => {
   const instance = axios.create({ baseURL });
@@ -34,7 +34,7 @@ const createAxiosInstance = (
   return instance;
 };
 
-const $host = createAxiosInstance(process.env.REACT_APP_API_URL + "/api");
+const $host = createAxiosInstance(process.env.REACT_APP_API_URL);
 export { $host };
 export * from "./ordersApi";
 export * from "./advertisementsApi";

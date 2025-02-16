@@ -37,7 +37,7 @@ class AdvertisementsApi {
   }
   async changeAdvertisement(
     id: number | string,
-    info: IAdvertisment,
+    info: Partial<IAdvertisment>,
     signal: AbortSignal
   ): Promise<IAdvertisment> {
     const { data } = await $host.patch(`/advertisements/${id}`, info, {

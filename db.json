@@ -2,13 +2,13 @@
   "advertisements": [
     {
       "id": "1",
-      "name": "Стул старинный",
-      "description": "Очень красивый",
-      "price": 2000,
+      "name": "<script>alert(1)</script>",
+      "description": "Очень красивый test",
+      "price": 2005,
       "createdAt": "2022-08-12T20:16:55.351Z",
       "views": 20,
       "likes": 2,
-      "imageUrl": ""
+      "imageUrl": "C:\\fakepath\\6k4TV_MjkGE.jpg"
     },
     {
       "id": "2",

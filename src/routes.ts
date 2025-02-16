@@ -19,7 +19,7 @@ export const routes: IComponent[] = [
     Component: Advertisements,
   },
   {
-    path: paths.AdvertisementPage,
+    path: paths.AdvertisementPage + ":id",
     Component: AdvertisementPage,
   },
   {
