@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ComponentContainer, EditButton } from "../templates";
+import { ComponentContainer, EditButton, Loader } from "../templates";
 import { Link, useParams } from "react-router-dom";
 import {
   createNewAbortController,
@@ -8,9 +8,10 @@ import {
 } from "../utils";
 import { advertisementsApi } from "../api";
 import { IAdvertisment } from "../../types/types";
-import placeholderImageUrl from "../assets/images/placeholder-image.webp";
 import { Btn, Modal } from "../components";
 import { TextField } from "@mui/material";
+import ImageUploader from "../components/ImageUploader";
+import { setImage } from "../utils/helpers";
 
 const EditNameForm: React.FC<{
   initialValue: string;
@@ -84,24 +85,20 @@ const EditDescriptionForm: React.FC<{
 };
 
 const EditImageForm: React.FC<{
-  initialValue: string;
   onSave: (newImageUrl: string) => Promise<void>;
-}> = ({ initialValue, onSave }) => {
-  const [imageUrl, setImageUrl] = useState(initialValue);
-
-  const handleSave = async () => {
+}> = ({ onSave }) => {
+  const handleSave = async (imageUrl: string) => {
     await onSave(imageUrl);
   };
 
   return (
     <div>
       <h2>Редактировать изображение</h2>
-      <TextField
-        type="file"
-        onChange={(e) => setImageUrl(e.target.value)}
-        placeholder="Введите URL нового изображения"
+      <ImageUploader
+        onUpload={(url) => {
+          handleSave(url);
+        }}
       />
-      <Btn onClick={handleSave}>Сохранить</Btn>
     </div>
   );
 };
@@ -126,7 +123,6 @@ const AdvertisementPage = () => {
           (signal) => advertisementsApi.getAdvertisement(id, signal),
           signal
         );
-        console.log(fetchData);
         setData(fetchData);
       } catch (error) {
         const err = handleError(error);
@@ -135,6 +131,8 @@ const AdvertisementPage = () => {
       }
       setIsLoading(false);
     })();
+
+    return () => controller.abort();
   }, [id]);
 
   const openModal = (content: React.ReactNode) => {
@@ -162,7 +160,6 @@ const AdvertisementPage = () => {
       );
       setData(updatedData);
       closeModal();
-      console.log("Данные успешно обновлены:", updatedData);
     } catch (error) {
       console.error("Ошибка при обновлении данных:", error);
     }
@@ -171,87 +168,88 @@ const AdvertisementPage = () => {
   return (
     <div className="page advertisement-page">
       <ComponentContainer>
-        {data ? (
-          <div className="adv">
-            <div className="adv-image">
-              {data?.imageUrl ? (
-                <img src={data.imageUrl} alt="" />
-              ) : (
-                <img src={placeholderImageUrl} alt="" />
-              )}
-              <EditButton
-                onClick={() =>
-                  openModal(
-                    <EditImageForm
-                      initialValue={data.imageUrl || ""}
-                      onSave={(newImageUrl) =>
-                        handleSave("imageUrl", newImageUrl)
+        {!isLoading ? (
+          <React.Fragment>
+            {data ? (
+              <div className="adv">
+                <div className="adv-image">
+                  {setImage(data.imageUrl)}
+                  <EditButton
+                    onClick={() =>
+                      openModal(
+                        <EditImageForm
+                          onSave={(newImageUrl) =>
+                            handleSave("imageUrl", newImageUrl)
+                          }
+                        />
+                      )
+                    }
+                  />
+                </div>
+                <div className="adv-info">
+                  <div className="adv-info-name">
+                    Название: {data.name}{" "}
+                    <EditButton
+                      onClick={() =>
+                        openModal(
+                          <EditNameForm
+                            initialValue={data.name}
+                            onSave={(newName) => handleSave("name", newName)}
+                          />
+                        )
                       }
                     />
-                  )
-                }
-              />
-            </div>
-            <div className="adv-info">
-              <div className="adv-info-name">
-                Название: {data.name}{" "}
-                <EditButton
-                  onClick={() =>
-                    openModal(
-                      <EditNameForm
-                        initialValue={data.name}
-                        onSave={(newName) => handleSave("name", newName)}
-                      />
-                    )
-                  }
-                />
+                  </div>
+                  <div className="adv-info-price">
+                    Цена: {data.price}{" "}
+                    <EditButton
+                      onClick={() =>
+                        openModal(
+                          <EditPriceForm
+                            initialValue={data.price}
+                            onSave={(newPrice) => handleSave("price", newPrice)}
+                          />
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="adv-info-description">
+                    {data.description
+                      ? `Описание: ${data.description}`
+                      : `Описания нет`}
+                    <EditButton
+                      onClick={() =>
+                        openModal(
+                          <EditDescriptionForm
+                            initialValue={data.description || ""}
+                            onSave={(newDescription) =>
+                              handleSave("description", newDescription)
+                            }
+                          />
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="adv-info-likes-views">
+                    Лайки: <span className="likes">{data.likes}</span>,
+                    просмотров: <span className="views">{data.views}</span>
+                  </div>
+                </div>
               </div>
-              <div className="adv-info-price">
-                Цена: {data.price}{" "}
-                <EditButton
-                  onClick={() =>
-                    openModal(
-                      <EditPriceForm
-                        initialValue={data.price}
-                        onSave={(newPrice) => handleSave("price", newPrice)}
-                      />
-                    )
-                  }
-                />
+            ) : (
+              <div className="no-adv">
+                <p>
+                  Объявление не найдено. Проверьте url, либо напишите нам в{" "}
+                  <Link to={"#"}>поддержку</Link>
+                  {error && (
+                    <div className="error-message">Текст ошибки: {error}</div>
+                  )}
+                </p>
               </div>
-              <div className="adv-info-description">
-                {data.description
-                  ? `Описание: ${data.description}`
-                  : `Описания нет`}
-                <EditButton
-                  onClick={() =>
-                    openModal(
-                      <EditDescriptionForm
-                        initialValue={data.description || ""}
-                        onSave={(newDescription) =>
-                          handleSave("description", newDescription)
-                        }
-                      />
-                    )
-                  }
-                />
-              </div>
-              <div className="adv-info-likes-views">
-                Лайки: <span className="likes">{data.likes}</span>, просмотров:{" "}
-                <span className="views">{data.views}</span>
-              </div>
-            </div>
-          </div>
+            )}
+          </React.Fragment>
         ) : (
-          <div className="no-adv">
-            <p>
-              Объявление не найдено. Проверьте url, либо напишите нам в{" "}
-              <Link to={"#"}>поддержку</Link>
-              {error && (
-                <div className="error-message">Текст ошибки: {error}</div>
-              )}
-            </p>
-          </div>
+          <Loader />
         )}
       </ComponentContainer>
       <Modal isOpen={isModalOpen} onClose={closeModal}>

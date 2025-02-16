@@ -35,6 +35,8 @@ const createAxiosInstance = (
 };
 
 const $host = createAxiosInstance(process.env.REACT_APP_API_URL);
-export { $host };
+const $serverHost = createAxiosInstance(process.env.REACT_APP_SERVER_URL);
+export { $host, $serverHost };
 export * from "./ordersApi";
 export * from "./advertisementsApi";
+export * from "./serverApi";
