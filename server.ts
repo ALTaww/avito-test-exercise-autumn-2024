@@ -51,7 +51,17 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    // Проверяем, является ли файл изображением
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, true); // Принимаем файл
+    } else {
+      cb(new Error("Пожалуйста, загружайте только изображения.")); // Отклоняем файл
+    }
+  },
+});
 
 // Маршрут для загрузки файлов
 app.post("/upload", upload.single("image"), (req: Request, res: Response) => {
