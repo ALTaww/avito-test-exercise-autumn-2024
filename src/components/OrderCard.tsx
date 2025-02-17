@@ -28,7 +28,9 @@ const OrderCard: FC<IComponent> = ({
       <div>Номер заказа: {id}</div>
       <div>
         Статус:{" "}
-        {Object.keys(OrderStatus).find((k) => OrderStatus[k] === status)}
+        {(Object.keys(OrderStatus) as Array<keyof typeof OrderStatus>).find(
+          (k) => OrderStatus[k] === status
+        )}
       </div>
       <div>Дата создания: {createdAt}</div>
       <div>Дата завершения: {finishedAt}</div>

@@ -46,6 +46,16 @@ export type IOrder = {
   total: number;
 };
 
+export const OrderKeys: Record<keyof IOrder, keyof IOrder> = {
+  id: "id",
+  status: "status",
+  createdAt: "createdAt",
+  finishedAt: "finishedAt",
+  items: "items",
+  deliveryWay: "deliveryWay",
+  total: "total",
+};
+
 export type IImage = {
   /* Уникальный идентификатор. */
   id: number;
