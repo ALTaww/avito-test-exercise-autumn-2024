@@ -1,5 +1,5 @@
 import { $host } from ".";
-import { IAdvertisment } from "../../types/types";
+import { IAdvertisment } from "../types/types";
 
 class AdvertisementsApi {
   async getAdvertisements(

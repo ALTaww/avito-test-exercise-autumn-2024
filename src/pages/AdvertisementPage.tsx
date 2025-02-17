@@ -7,7 +7,7 @@ import {
   handleError,
 } from "../utils";
 import { advertisementsApi } from "../api";
-import { IAdvertisment } from "../../types/types";
+import { IAdvertisment } from "../types/types";
 import { Btn, Modal } from "../components";
 import { TextField } from "@mui/material";
 import ImageUploader from "../components/ImageUploader";

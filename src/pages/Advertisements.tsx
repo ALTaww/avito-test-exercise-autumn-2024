@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { IAdvertisment } from "../../types/types";
+import { IAdvertisment } from "../types/types";
 import { advertisementsApi } from "../api";
 import {
   createNewAbortController,

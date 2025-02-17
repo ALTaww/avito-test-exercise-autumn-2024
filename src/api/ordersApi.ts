@@ -1,5 +1,5 @@
 import { $host } from ".";
-import { IOrder } from "../../types/types";
+import { IOrder } from "../types/types";
 
 class OrdersApi {
   async getOrders(
