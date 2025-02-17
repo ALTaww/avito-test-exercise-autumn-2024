@@ -1,6 +1,18 @@
+@import "../mixins";
+@import "../variables";
+
 header {
   .header {
     display: flex;
     gap: 3rem;
+  }
+}
+
+@include breakpoints-max(sm) {
+  header {
+    .header {
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
   }
 }

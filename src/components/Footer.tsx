@@ -6,8 +6,8 @@ import "../css/footer.css";
 const Footer = () => {
   return (
     <footer>
-      <div className="footer">
-        <ComponentContainer>
+      <ComponentContainer>
+        <div className="footer">
           <div className="footer__container">
             <div className="footer__logo">
               <A href="https://github.com/ALTaww">
@@ -16,8 +16,8 @@ const Footer = () => {
               </A>
             </div>
           </div>
-        </ComponentContainer>
-      </div>
+        </div>
+      </ComponentContainer>
     </footer>
   );
 };

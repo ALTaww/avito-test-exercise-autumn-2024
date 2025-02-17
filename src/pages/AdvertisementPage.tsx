@@ -12,6 +12,7 @@ import { Btn, Modal } from "../components";
 import { TextField } from "@mui/material";
 import ImageUploader from "../components/ImageUploader";
 import { setImage } from "../utils/helpers";
+import "../css/advertisement-page.css";
 
 const EditNameForm: React.FC<{
   initialValue: string;
@@ -168,6 +169,7 @@ const AdvertisementPage = () => {
   return (
     <div className="page advertisement-page">
       <ComponentContainer>
+        <h1>Объявление</h1>
         {!isLoading ? (
           <React.Fragment>
             {data ? (
@@ -238,13 +240,13 @@ const AdvertisementPage = () => {
               </div>
             ) : (
               <div className="no-adv">
-                <p>
+                <div>
                   Объявление не найдено. Проверьте url, либо напишите нам в{" "}
                   <Link to={"#"}>поддержку</Link>
                   {error && (
                     <div className="error-message">Текст ошибки: {error}</div>
                   )}
-                </p>
+                </div>
               </div>
             )}
           </React.Fragment>
