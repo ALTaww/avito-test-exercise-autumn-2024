@@ -1,0 +1,1 @@
+html{font-size:16px;min-height:100vh}*{box-sizing:border-box;margin:0;padding:0}button{outline:0;border:0;background:rgba(0,0,0,0)}#root{min-height:100vh;display:flex;flex-direction:column;padding:1rem}#root .page{flex:1}.container-body{max-width:1200px;margin:0 auto}.error-message{color:red}/*# sourceMappingURL=app.css.map */

@@ -1,0 +1,31 @@
+@import "../mixins";
+@import "../variables";
+
+.advertisement-page {
+  .adv {
+    display: flex;
+    gap: 2rem;
+
+    &-image {
+      max-width: min(50%, 500px);
+
+      img {
+        border: 1px solid $text-color;
+        border-radius: 2rem;
+        width: 100%;
+        aspect-ratio: 1;
+      }
+    }
+  }
+}
+
+@include breakpoints-max(sm) {
+  .advertisement-page {
+    .adv {
+      flex-direction: column;
+      &-image {
+        max-width: 100%;
+      }
+    }
+  }
+}

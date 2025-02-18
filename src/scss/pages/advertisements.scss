@@ -1,0 +1,21 @@
+.advertisements-page {
+  .place-adv {
+    margin: 1rem 0;
+    float: right;
+  }
+
+  .pagination {
+    margin: 1rem 0;
+
+    ul {
+      justify-content: center;
+    }
+  }
+
+  .advertisements {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: center;
+  }
+}
