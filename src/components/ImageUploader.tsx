@@ -1,10 +1,18 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createNewAbortController, fetchWithAbort } from "../utils";
 import { serverApi } from "../api";
 import Btn from "./Btn";
 
-const ImageUploader: React.FC<{ onUpload: (url: string) => void }> = ({
+interface IComponent {
+  onUpload: (url: string) => void;
+  uploading?: boolean;
+  required?: boolean;
+}
+
+const ImageUploader: React.FC<IComponent> = ({
   onUpload,
+  uploading,
+  required,
 }) => {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -27,40 +35,56 @@ const ImageUploader: React.FC<{ onUpload: (url: string) => void }> = ({
     }
   };
 
-  const handleUpload = async (
-    e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>
-  ) => {
-    e.preventDefault();
-    if (!file) {
-      setError("Пожалуйста, выберите файл.");
-      return;
+  const handleUpload = useCallback(
+    async (
+      e?: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>
+    ) => {
+      e?.preventDefault();
+      if (!required && !file) {
+        onUpload("");
+        return;
+      }
+
+      if (!file) {
+        setError("Пожалуйста, выберите файл.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const { controller, signal } =
+        createNewAbortController(abortControllerRef);
+      abortControllerRef.current = controller;
+
+      try {
+        const data = await fetchWithAbort(
+          (signal) => serverApi.uploadFile(formData, signal),
+          signal
+        );
+        onUpload(data.url); // URL загруженного изображения
+      } catch (error) {
+        console.error("Ошибка при загрузке файла:", error);
+        setError(
+          "Ошибка при загрузке файла. Пожалуйста, проверьте что вы запустили ts-node server.ts и попробуйте ещё раз."
+        );
+      }
+    },
+    [file, onUpload, required]
+  );
+
+  // Управление загрузкой изображения извне через uploading
+  useEffect(() => {
+    if (uploading) {
+      handleUpload();
     }
-
-    const formData = new FormData();
-    formData.append("image", file);
-
-    const { controller, signal } = createNewAbortController(abortControllerRef);
-    abortControllerRef.current = controller;
-
-    try {
-      const data = await fetchWithAbort(
-        (signal) => serverApi.uploadFile(formData, signal),
-        signal
-      );
-      onUpload(data.url); // URL загруженного изображения
-    } catch (error) {
-      console.error("Ошибка при загрузке файла:", error);
-      setError(
-        "Ошибка при загрузке файла. Пожалуйста, проверьте что вы запустили ts-node server.ts и попробуйте ещё раз."
-      );
-    }
-  };
+  }, [uploading, handleUpload]);
 
   return (
     <div>
       <input type="file" accept="image/*" onChange={handleFileChange} />
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <Btn onClick={handleUpload}>Загрузить</Btn>
+      {uploading !== false && <Btn onClick={handleUpload}>Загрузить</Btn>}
     </div>
   );
 };

@@ -6,21 +6,38 @@ import {
   fetchWithAbort,
   handleError,
 } from "../utils";
-import { AdvertisementCard, Btn } from "../components";
+import {
+  AdvertisementCard,
+  AdvertisementForm,
+  Btn,
+  Modal,
+} from "../components";
 import ComponentContainer from "../templates/ComponentContainer";
 import { Loader } from "../templates";
 import "../css/advertisements.css";
-import { MenuItem, TextField } from "@mui/material";
-import { Link } from "react-router-dom";
-import { paths } from "../paths";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  TextField,
+} from "@mui/material";
 
 const Advertisements = () => {
   const [advertisements, setAdvertisements] = useState<IAdvertisment[]>([]);
+  const [visibleAdvertisements, setVisibleAdvertisements] =
+    useState<IAdvertisment[]>(advertisements);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const abortControllerRef = useRef(new AbortController());
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  function closeModal() {
+    setIsModalOpen(false);
+  }
 
   useEffect(() => {
     getAdvertisements();
@@ -32,15 +49,11 @@ const Advertisements = () => {
 
     try {
       const adv = await fetchWithAbort(
-        (signal) =>
-          advertisementsApi.getAdvertisements(
-            (page - 1) * limit,
-            limit,
-            signal
-          ),
+        (signal) => advertisementsApi.getAdvertisements(0, 999, signal),
         signal
       );
       setAdvertisements(adv);
+      setVisibleAdvertisements(adv);
     } catch (error) {
       const err = handleError(error);
       console.error(err);
@@ -48,14 +61,24 @@ const Advertisements = () => {
     setIsLoading(false);
   }
 
-  function openModalForm() {}
+  function searchItems() {
+    const sortedAdvertisements = advertisements.filter((item) => {
+      return item.name.toLowerCase().includes(search.toLowerCase());
+    });
+
+    setVisibleAdvertisements(sortedAdvertisements);
+  }
 
   return (
     <div className="page advertisements-page">
       <ComponentContainer>
         <h1>Объявления</h1>
         <div className="place-adv">
-          <Btn variant="contained" color="success" onClick={openModalForm}>
+          <Btn
+            variant="contained"
+            color="success"
+            onClick={() => setIsModalOpen(true)}
+          >
             Создать новое объявление
           </Btn>
         </div>
@@ -67,7 +90,7 @@ const Advertisements = () => {
             justifyContent: "center",
           }}
         >
-          {/* <div>
+          <div>
             <TextField
               type="search"
               value={search}
@@ -80,35 +103,61 @@ const Advertisements = () => {
                 }
               }}
             />
-            <TextField
-              select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              defaultValue={"Все"}
-              label="Категория"
-              sx={{ m: "0 1rem 2rem 0" }}
-            >
-              <MenuItem value={"Все"}>Все</MenuItem>
-
-              {[10,20,30].map((value) => (
-                <MenuItem value={value}>{value}</MenuItem>
-              ))}
-            </TextField>
+            <FormControl variant="standard">
+              <InputLabel id="limit-select">Лимит</InputLabel>
+              <Select
+                id="limit-select"
+                type="select"
+                value={`${limit}`}
+                onChange={(e) => setLimit(Number(e.target.value))}
+              >
+                {[5, 10, 20].map((type) => (
+                  <MenuItem key={type} value={type}>
+                    {type}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <Btn onClick={searchItems}>Искать</Btn>
-          </div> */}
+          </div>
         </div>
+        <Pagination
+          className="pagination"
+          page={page}
+          count={Math.ceil(visibleAdvertisements.length / limit)}
+          onChange={(e, value) => setPage(value)}
+        />
         <div className="advertisements">
           {isLoading ? (
             <Loader />
           ) : (
             <React.Fragment>
-              {advertisements.map((advertisement) => (
-                <AdvertisementCard key={advertisement.id} {...advertisement} />
-              ))}
+              {visibleAdvertisements
+                .slice((page - 1) * limit, page * limit)
+                .map((advertisement) => (
+                  <AdvertisementCard
+                    key={advertisement.id}
+                    {...advertisement}
+                  />
+                ))}
             </React.Fragment>
           )}
         </div>
+        <Pagination
+          className="pagination"
+          page={page}
+          count={Math.ceil(visibleAdvertisements.length / limit)}
+          onChange={(e, value) => setPage(value)}
+        />
       </ComponentContainer>
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <AdvertisementForm
+          onCreate={(data) => {
+            setAdvertisements([...advertisements, data]);
+            closeModal();
+          }}
+        />
+      </Modal>
     </div>
   );
 };

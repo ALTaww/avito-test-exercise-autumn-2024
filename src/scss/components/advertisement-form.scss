@@ -1,0 +1,10 @@
+.advertisement-form {
+  display: flex;
+  justify-content: center;
+
+  &-container {
+    & > * {
+      margin-bottom: 1rem;
+    }
+  }
+}

@@ -14,7 +14,12 @@ class AdvertisementsApi {
     return data;
   }
   async makeAdvertisement(
-    info: IAdvertisment,
+    info: {
+      name: string;
+      description: string;
+      price: number;
+      imageUrl?: string;
+    },
     signal: AbortSignal
   ): Promise<IAdvertisment> {
     const { data } = await $host.post(`/advertisements`, info, { signal });
