@@ -47,3 +47,12 @@ npm test
 
 Для загрузки картинок используется отдельный сервер.
 Старые фото не удаляются!
+
+![image](https://github.com/user-attachments/assets/8e0a73d0-bbba-48d5-ab6e-c17037a49497)
+
+![image](https://github.com/user-attachments/assets/3084c5d7-9400-4a90-986b-42cc052913fb)
+
+![image](https://github.com/user-attachments/assets/3a94e8fe-e57b-4dbf-9b3d-48388be9b6af)
+
+
+
